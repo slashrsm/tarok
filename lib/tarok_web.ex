@@ -47,7 +47,13 @@ defmodule TarokWeb do
 
   def router do
     quote do
-      use Phoenix.Router
+      use Phoenix.Router,
+      dispatch: [
+        { :_, [
+            {"/sockets/lobby", Tarok.Socket, [] },
+            {:_, Plug.Adapters.Cowboy.Handler, { __MODULE__, [] }}
+        ]}
+      ]
       import Plug.Conn
       import Phoenix.Controller
     end

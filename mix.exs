@@ -40,6 +40,8 @@ defmodule Tarok.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 1.6"},
+      {:gun, "~> 2.0", hex: :grpc_gun},
+      {:websockex, "~> 0.4.2"},
     ]
   end
 end
