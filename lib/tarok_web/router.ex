@@ -9,18 +9,10 @@ defmodule TarokWeb.Router do
     plug :put_secure_browser_headers
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
-
   scope "/", TarokWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/*path", ProxyController, :proxy
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", TarokWeb do
-  #   pipe_through :api
-  # end
 end
