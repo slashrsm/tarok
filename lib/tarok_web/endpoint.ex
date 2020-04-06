@@ -16,6 +16,12 @@ defmodule TarokWeb.Endpoint do
   #  signing_salt: "nO9s0PA5"
   #]
 
+  plug Plug.Static,
+    at: "/",
+    from: :tarok,
+    gzip: false,
+    only: ~w(js)
+
   #plug Plug.RequestId
   #plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 

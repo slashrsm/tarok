@@ -9,7 +9,7 @@ use Mix.Config
 
 # Configures the endpoint
 config :tarok, TarokWeb.Endpoint,
-  url: [host: "valat.si"],
+  url: [host: "localhost"],
   secret_key_base: "SYGGwZ+59wGQUgkNBAdIAAx6c8asWdHdpX2oITzatWEo4dy89VU/i8+yAf19u2sV",
   render_errors: [view: TarokWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Tarok.PubSub, adapter: Phoenix.PubSub.PG2],
@@ -23,7 +23,7 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-#config :phoenix, :logger, false
+config :phoenix, :logger, false
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

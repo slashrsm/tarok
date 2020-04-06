@@ -7,13 +7,7 @@ use Mix.Config
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
 config :tarok, TarokWeb.Endpoint,
-  http: [port: 80],
-  https: [
-    port: 443,
-    cipher_suite: :strong,
-    certfile: "priv/cert/selfsigned.pem",
-    keyfile: "priv/cert/selfsigned_key.pem"
-  ],
+  http: [port: 4000],
   debug_errors: true,
   code_reloader: false,
   check_origin: false

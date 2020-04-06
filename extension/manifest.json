@@ -1,0 +1,19 @@
+{
+  "description": "Valat helper.",
+  "manifest_version": 2,
+  "name": "valat_helper",
+  "version": "1.0",
+  "applications": {
+    "gecko": {
+        "id": "valat_helper@urevc.com"
+    }
+},
+  "permissions": [
+    "webRequestBlocking",
+    "webRequest",
+    "*://valat.si/*"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  }
+}
