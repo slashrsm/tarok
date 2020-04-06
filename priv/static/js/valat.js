@@ -1,6 +1,18 @@
 (function() {
   'use strict';
   'use strict';
+
+  function prefixMessage(pf, message) {
+    message = new Uint8Array(message)
+    var prefixed = new Uint8Array(message.byteLength + 1);
+    prefixed.set([pf], 0);
+    prefixed.set(message, 1);
+    return prefixed;
+  }
+
+  var ex_socket = new WebSocket("ws://localhost:4000/moves/socket");
+  ex_socket.binaryType = "arraybuffer";
+
   var d, aa = "object" === typeof __ScalaJSEnv && __ScalaJSEnv ? __ScalaJSEnv : {},
       ca = "object" === typeof aa.global && aa.global ? aa.global : "object" === typeof global && global && global.Object === Object ? global : this;
   aa.global = ca;
@@ -2674,6 +2686,8 @@
   function di(a, b) {
       if (a.Tk) {
           var c = b.Ha;
+          //console.log('Send:', ei(b).slice(0, c))
+          ex_socket.send(prefixMessage(0x00, ei(b).slice(0, c)))
           a.Mj.send(ei(b).slice(0, c))
       }
   }
@@ -2693,6 +2707,8 @@
       }(b);
       b.Mj.onmessage = function(c) {
           return function(e) {
+              ex_socket.send(prefixMessage(0x01, e.data))
+              //console.log(e.data)
               c.Tk && (Zh(c.Y), e = e.data, 0 === (e.byteLength | 0) ? A().Ba.location.reload(!0) : c.Y.Gk(c.Y.uk(fi(gi(), e))))
           }
       }(b);

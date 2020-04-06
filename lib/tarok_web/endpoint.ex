@@ -1,11 +1,8 @@
 defmodule TarokWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :tarok
 
-  socket "/sockets/game", Tarok.Socket,
-    websocket: [path: "/:id", serializer: []]
-
-  socket "/sockets", Tarok.Socket,
-    websocket: [path: "/:type", serializer: []]
+  socket "/moves", Tarok.Socket,
+    websocket: [path: "/socket", serializer: []]
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.

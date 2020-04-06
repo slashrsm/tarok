@@ -50,7 +50,7 @@ defmodule TarokWeb do
       use Phoenix.Router,
       dispatch: [
         { :_, [
-            {"/sockets/lobby", Tarok.Socket, [] },
+            {"/moves", Tarok.Socket, [] },
             {:_, Plug.Adapters.Cowboy.Handler, { __MODULE__, [] }}
         ]}
       ]
