@@ -8,38 +8,38 @@ defmodule Tarok.Socket do
     0x01 => "♣8",
     0x02 => "♣9",
     0x03 => "♣10",
-    0x04 => "♣B",
+    0x04 => "♣J",
     0x05 => "♣C",
-    0x06 => "♣D",
+    0x06 => "♣Q",
     0x07 => "♣K",
     0x08 => "♥4",
     0x09 => "♥3",
     0x0A => "♥2",
     0x0B => "♥1",
-    0x0C => "♥B",
+    0x0C => "♥J",
     0x0D => "♥C",
-    0x0E => "♥D",
+    0x0E => "♥Q",
     0x0F => "♥K",
     0x10 => "♠7",
     0x11 => "♠8",
     0x12 => "♠9",
     0x13 => "♠10",
-    0x14 => "♠B",
+    0x14 => "♠J",
     0x15 => "♠C",
-    0x16 => "♠D",
+    0x16 => "♠Q",
     0x17 => "♠K",
     0x18 => "♦4",
     0x19 => "♦3",
     0x1A => "♦2",
     0x1B => "♦1",
-    0x1C => "♦B",
+    0x1C => "♦J",
     0x1D => "♦C",
-    0x1E => "♦D",
+    0x1E => "♦Q",
     0x1F => "♦K",
     0x20 => "I",
     0x21 => "II",
     0x22 => "III",
-    0x23 => "IV",
+    0x23 => "IIII",
     0x24 => "V",
     0x25 => "VI",
     0x26 => "VII",
@@ -57,7 +57,15 @@ defmodule Tarok.Socket do
     0x32 => "XIX",
     0x33 => "XX",
     0x34 => "XXI",
-    0x35 => "Škis"
+    0x35 => "Fool"
+  }
+
+  @games %{
+    0x03 => "Klop",
+    0x06 => "Pass",
+    0x07 => "Solo 1",
+    0x09 => "Solo 2",
+    0x0A => "Solo w/o"
   }
 
   @color_hand_bits %{
@@ -66,9 +74,9 @@ defmodule Tarok.Socket do
       0x02 => "8",
       0x04 => "9",
       0x08 => "10",
-      0x10 => "B",
+      0x10 => "J",
       0x20 => "C",
-      0x40 => "D",
+      0x40 => "Q",
       0x80 => "K"
     },
     red: %{
@@ -76,32 +84,9 @@ defmodule Tarok.Socket do
       0x02 => "3",
       0x04 => "2",
       0x08 => "1",
-      0x10 => "B",
+      0x10 => "J",
       0x20 => "C",
-      0x40 => "D",
-      0x80 => "K"
-    }
-  }
-
-  @color_hand_bits %{
-    black: %{
-      0x01 => "7",
-      0x02 => "8",
-      0x04 => "9",
-      0x08 => "10",
-      0x10 => "B",
-      0x20 => "C",
-      0x40 => "D",
-      0x80 => "K"
-    },
-    red: %{
-      0x01 => "4",
-      0x02 => "3",
-      0x04 => "2",
-      0x08 => "1",
-      0x10 => "B",
-      0x20 => "C",
-      0x40 => "D",
+      0x40 => "Q",
       0x80 => "K"
     }
   }
@@ -157,45 +142,74 @@ defmodule Tarok.Socket do
     "From talon I take set ##{set_nr}"
   end
 
-  def parse_message(<<0x02, 0x00, 0x06>>) do
-    "I do not play any game."
-  end
-
-  def parse_message(<<0x02, 0x00, 0x09>>) do
-    "I play game: solo 2"
-  end
-
   def parse_message(<<0x02, 0x00, game_nr::size(8)>>) do
-    "I play game: #{game_nr}"
+    if Map.has_key?(@games, game_nr) do
+      "I play game: #{@games[game_nr]}"
+    else
+      "I play game: #{game_nr}"
+    end
+  end
+
+  def parse_message(<<0x0, 0x01, 0x16, 0x00, limit::binary>>) do
+    "My possible moves are: #{Base.encode16(limit)}"
   end
 
   def parse_message(
-        <<0x00, 0x01, 0x17, 0x00, 0x00, 0x00E1, clubs::integer-size(8), hearts::integer-size(8),
-          spades::integer-size(8), diamonds::integer-size(8), tarocks1::integer-size(8),
-          tarocks2::integer-size(8), tarocks3::integer-size(8), 0x00>>
+        <<0x00, 0x05, 0x02, 0x00, 0x02, 0x00, 0x0E, 0x00, first_unknown::binary-size(21),
+          hand::binary-size(8), second_unknown::binary>>
       ) do
-    clubs =
-      parse_hand_color(clubs, :black) |> Enum.map(fn card -> "♣" <> card end) |> Enum.join(" ")
+    hand = get_hand(hand) |> Enum.join(" ")
 
-    spades =
-      parse_hand_color(spades, :black) |> Enum.map(fn card -> "♠" <> card end) |> Enum.join(" ")
+    "Game started. Got hand: #{hand}. [#{Base.encode16(first_unknown)}, #{
+      Base.encode16(second_unknown)
+    }]"
+  end
 
-    hearts =
-      parse_hand_color(hearts, :red) |> Enum.map(fn card -> "♥" <> card end) |> Enum.join(" ")
+  def parse_message(<<0x00, 0x04, 0x09, 0x00, full_message::binary>>) do
+    case split_binary_at(<<0x00, 0xE1>>, full_message, <<>>) do
+      {first_unknown, <<hand::binary-size(8), second_unknown::binary>>} ->
+        won = get_hand(hand) |> Enum.join(" ")
 
-    diamonds =
-      parse_hand_color(diamonds, :red) |> Enum.map(fn card -> "♦" <> card end) |> Enum.join(" ")
+        "Game ended. Player won the following cards: #{won}. [#{Base.encode16(first_unknown)}, #{
+          Base.encode16(second_unknown)
+        }]"
 
-    tarocks1 =
-      parse_hand_tarock(tarocks1) |> Enum.map(fn card -> @cards[card + 31] end) |> Enum.join(" ")
+      :error ->
+        "Game ended. Unknown message: #{Base.encode16(full_message)}"
+    end
+  end
 
-    tarocks2 =
-      parse_hand_tarock(tarocks2) |> Enum.map(fn card -> @cards[card + 39] end) |> Enum.join(" ")
+  def parse_message(<<0x00, 0x03, 0x09, 0x00, full_message::binary>>) do
+    case split_binary_at(<<0x00, 0xE1>>, full_message, <<>>) do
+      {first_unknown, <<hand::binary-size(8), second_unknown::binary>>} ->
+        won = get_hand(hand) |> Enum.join(" ")
 
-    tarocks3 =
-      parse_hand_tarock(tarocks3) |> Enum.map(fn card -> @cards[card + 47] end) |> Enum.join(" ")
+        "Game ended. Player lost \"klop\": #{won}. [#{Base.encode16(first_unknown)}, #{
+          Base.encode16(second_unknown)
+        }]"
 
-    "Got hand: #{clubs} #{hearts} #{spades} #{diamonds} #{tarocks1} #{tarocks2} #{tarocks3}"
+      :error ->
+        "Game ended. Unknown message: #{Base.encode16(full_message)}"
+    end
+  end
+
+  def parse_message(<<0x00, 0x05, 0x07, 0x00, full_message::binary>>) do
+    case split_binary_at(<<0x00, 0xE1>>, full_message, <<>>) do
+      {first_unknown, <<hand::binary-size(8), second_unknown::binary>>} ->
+        won = get_hand(hand) |> Enum.join(" ")
+
+        "Game ended. Want to play more? Player won the following cards: #{won}. [#{
+          Base.encode16(first_unknown)
+        }, #{Base.encode16(second_unknown)}]"
+
+      :error ->
+        "Game ended. Want to play more? Unknown message: #{Base.encode16(full_message)}"
+    end
+  end
+
+  def parse_message(<<0x00, 0x01, 0x17, 0x00, 0x00, 0x00E1, hand::binary-size(8)>>) do
+    hand = get_hand(hand) |> Enum.join(" ")
+    "Got hand: #{hand}"
   end
 
   def parse_message(<<0x05, 0x00, 0x02>>) do
@@ -260,10 +274,47 @@ defmodule Tarok.Socket do
     |> Enum.map(fn {_, card} -> card end)
   end
 
+  defp get_hand(
+         <<clubs::integer-size(8), hearts::integer-size(8), spades::integer-size(8),
+           diamonds::integer-size(8), tarocks1::integer-size(8), tarocks2::integer-size(8),
+           tarocks3::integer-size(8), 0x00>>
+       ) do
+    clubs = parse_hand_color(clubs, :black) |> Enum.map(fn card -> "♣" <> card end)
+
+    spades = parse_hand_color(spades, :black) |> Enum.map(fn card -> "♠" <> card end)
+
+    hearts = parse_hand_color(hearts, :red) |> Enum.map(fn card -> "♥" <> card end)
+
+    diamonds = parse_hand_color(diamonds, :red) |> Enum.map(fn card -> "♦" <> card end)
+
+    tarocks1 = parse_hand_tarock(tarocks1) |> Enum.map(fn card -> @cards[card + 31] end)
+
+    tarocks2 = parse_hand_tarock(tarocks2) |> Enum.map(fn card -> @cards[card + 39] end)
+
+    tarocks3 = parse_hand_tarock(tarocks3) |> Enum.map(fn card -> @cards[card + 47] end)
+
+    clubs ++ hearts ++ spades ++ diamonds ++ tarocks1 ++ tarocks2 ++ tarocks3
+  end
+
   defp parse_hand_tarock(hand) do
     @tarock_hand_bits
     |> Enum.map(fn {bits, card} -> {bits &&& hand, card} end)
     |> Enum.filter(fn {present, _card} -> present > 0 end)
     |> Enum.map(fn {_, card} -> card end)
+  end
+
+  def split_binary_at(
+        <<fist_splitter, second_splitter>> = splitter,
+        <<next::binary-size(1), rest::binary>> = full_binary,
+        before
+      ) do
+    case full_binary do
+      <<^fist_splitter, ^second_splitter, rest::binary>> -> {before, rest}
+      _ -> split_binary_at(splitter, rest, before <> next)
+    end
+  end
+
+  def split_binary_at(_, <<>>, _) do
+    :error
   end
 end
