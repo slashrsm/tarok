@@ -48,12 +48,14 @@ defmodule TarokWeb do
   def router do
     quote do
       use Phoenix.Router,
-      dispatch: [
-        { :_, [
-            {"/moves", Tarok.Socket, [] },
-            {:_, Plug.Adapters.Cowboy.Handler, { __MODULE__, [] }}
-        ]}
-      ]
+        dispatch: [
+          {:_,
+           [
+             {"/moves", Tarok.Socket, []},
+             {:_, Plug.Adapters.Cowboy.Handler, {__MODULE__, []}}
+           ]}
+        ]
+
       import Plug.Conn
       import Phoenix.Controller
     end
