@@ -164,7 +164,20 @@ defmodule Tarok.Socket do
           0x01, 0x01>>
       )
       when player == player_again and rem(player + 1, 3) == next_player do
-        "Klop started by player ##{player}. [time?: #{Base.encode16(time?)}, next player: #{next_player}]"
+    "Klop started by player ##{player}. [time?: #{Base.encode16(time?)}, next player: #{
+      next_player
+    }]"
+  end
+
+  def parse_message(
+        <<0x00, 0x03, 0x02, 0x00, player::size(8), 0x00, 0x0E, 0x00, 0x03, 0xA0,
+          gibberish::binary-size(8), player_again::size(8), 0x0C, 0x00,
+          obligatory_player::size(8), 0x08, 0x01, 0x01>>
+      )
+      when player == player_again and rem(obligatory_player + 1, 3) == player do
+    "Game negotiation, player ##{player} negotiates first, player ##{obligatory_player} has solo 3, [#{
+      Base.encode16(gibberish)
+    }]"
   end
 
   def parse_message(<<0x00, 0x01, 0x01, 0x00, games_nr::size(8), games::binary>>) do

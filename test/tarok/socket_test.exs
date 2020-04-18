@@ -277,12 +277,55 @@ defmodule Tarok.SocketTest do
   ]
 
   @klop_game_started [
-    {"0004190082090012020001030306060C0000030101", "Klop started by player #0. [time?: 8209, next player: 1]"},
-    {"0004190081CA0012020001030306060C0000030101", "Klop started by player #0. [time?: 81CA, next player: 1]"},
-    {"0004190082450112020002030306060C0001030101", "Klop started by player #1. [time?: 8245, next player: 2]"},
-    {"0004190082970212020000030306060C0002030101", "Klop started by player #2. [time?: 8297, next player: 0]"},
-    {"00041900822F0012020001030306060C0000030101", "Klop started by player #0. [time?: 822F, next player: 1]"},
-    {"0004190082790212020000030306060C0002030101", "Klop started by player #2. [time?: 8279, next player: 0]"}
+    {"0004190082090012020001030306060C0000030101",
+     "Klop started by player #0. [time?: 8209, next player: 1]"},
+    {"0004190081CA0012020001030306060C0000030101",
+     "Klop started by player #0. [time?: 81CA, next player: 1]"},
+    {"0004190082450112020002030306060C0001030101",
+     "Klop started by player #1. [time?: 8245, next player: 2]"},
+    {"0004190082970212020000030306060C0002030101",
+     "Klop started by player #2. [time?: 8297, next player: 0]"},
+    {"00041900822F0012020001030306060C0000030101",
+     "Klop started by player #0. [time?: 822F, next player: 1]"},
+    {"0004190082790212020000030306060C0002030101",
+     "Klop started by player #2. [time?: 8279, next player: 0]"}
+  ]
+
+  @game_negotiation_begins [
+    {"0003020000000E0003A0CC49A0D8D8A0C399000C0002080101", "Game negotiation, player #0 negotiates first, player #2 has solo 3, [CC49A0D8D8A0C399]"},
+    {"0003020001000E0003A0D538A0F5CBA1077E010C0000080101", "Game negotiation, player #1 negotiates first, player #0 has solo 3, [D538A0F5CBA1077E]"},
+    {"0003020002000E0003A0CE08A10C45A116A3020C0001080101", "Game negotiation, player #2 negotiates first, player #1 has solo 3, [CE08A10C45A116A3]"},
+    {"0003020000000E0003A0D0DEA1199FA10A23000C0002080101", "Game negotiation, player #0 negotiates first, player #2 has solo 3, [D0DEA1199FA10A23]"},
+    {"0003020001000E0003A0DEE5A114C9A127DD010C0000080101", "Game negotiation, player #1 negotiates first, player #0 has solo 3, [DEE5A114C9A127DD]"},
+    {"0003020002000E0003A0E298A0F9E3A10FB7020C0001080101", "Game negotiation, player #2 negotiates first, player #1 has solo 3, [E298A0F9E3A10FB7]"},
+    {"0003020000000E0003A0BF13A0D856A0F4D6000C0002080101", "Game negotiation, player #0 negotiates first, player #2 has solo 3, [BF13A0D856A0F4D6]"},
+    {"0003020001000E0003A0D48CA0EF7EA0EA97010C0000080101", "Game negotiation, player #1 negotiates first, player #0 has solo 3, [D48CA0EF7EA0EA97]"},
+    {"0003020002000E0003A0F16AA0F280A10ABA020C0001080101", "Game negotiation, player #2 negotiates first, player #1 has solo 3, [F16AA0F280A10ABA]"},
+    {"0003020000000E0003A0E851A0F1D9A0F6A8000C0002080101", "Game negotiation, player #0 negotiates first, player #2 has solo 3, [E851A0F1D9A0F6A8]"},
+    {"0003020001000E0003A0D469A10143A0F328010C0000080101", "Game negotiation, player #1 negotiates first, player #0 has solo 3, [D469A10143A0F328]"},
+    {"0003020002000E0003A0C6EBA0FAB0A0FA96020C0001080101", "Game negotiation, player #2 negotiates first, player #1 has solo 3, [C6EBA0FAB0A0FA96]"},
+    {"0003020000000E0003A0E164A0F27DA0F195000C0002080101", "Game negotiation, player #0 negotiates first, player #2 has solo 3, [E164A0F27DA0F195]"},
+    {"0003020001000E0003A0F1E0A0E0A6A115A8010C0000080101", "Game negotiation, player #1 negotiates first, player #0 has solo 3, [F1E0A0E0A6A115A8]"},
+    {"0003020002000E0003A0F917A0E2FEA12484020C0001080101", "Game negotiation, player #2 negotiates first, player #1 has solo 3, [F917A0E2FEA12484]"},
+    {"0003020000000E0003A0D0BCA0FDB4A104FB000C0002080101", "Game negotiation, player #0 negotiates first, player #2 has solo 3, [D0BCA0FDB4A104FB]"},
+    {"0003020001000E0003A0F5B7A0FDBEA102FA010C0000080101", "Game negotiation, player #1 negotiates first, player #0 has solo 3, [F5B7A0FDBEA102FA]"},
+    {"0003020002000E0003A0DFDAA0FF5AA10EC6020C0001080101", "Game negotiation, player #2 negotiates first, player #1 has solo 3, [DFDAA0FF5AA10EC6]"},
+    {"0003020000000E0003A0E928A10BF3A0FBF0000C0002080101", "Game negotiation, player #0 negotiates first, player #2 has solo 3, [E928A10BF3A0FBF0]"},
+    {"0003020001000E0003A0E641A0FE95A0EE3D010C0000080101", "Game negotiation, player #1 negotiates first, player #0 has solo 3, [E641A0FE95A0EE3D]"},
+    {"0003020002000E0003A0FED6A0FC99A1101E020C0001080101", "Game negotiation, player #2 negotiates first, player #1 has solo 3, [FED6A0FC99A1101E]"},
+    {"0003020001000E0003A0F1FDA0EF02A11314010C0000080101", "Game negotiation, player #1 negotiates first, player #0 has solo 3, [F1FDA0EF02A11314]"},
+    {"0003020002000E0003A0D2AAA0FDC7A103F5020C0001080101", "Game negotiation, player #2 negotiates first, player #1 has solo 3, [D2AAA0FDC7A103F5]"},
+    {"0003020000000E0003A0E1CEA105F0A0F502000C0002080101", "Game negotiation, player #0 negotiates first, player #2 has solo 3, [E1CEA105F0A0F502]"},
+    {"0003020001000E0003A0CF27A0E8AEA0EA87010C0000080101", "Game negotiation, player #1 negotiates first, player #0 has solo 3, [CF27A0E8AEA0EA87]"},
+    {"0003020002000E0003A0DFA1A0F6F4A108D8020C0001080101", "Game negotiation, player #2 negotiates first, player #1 has solo 3, [DFA1A0F6F4A108D8]"},
+    {"0003020000000E0003A0F281A10B1DA10AED000C0002080101", "Game negotiation, player #0 negotiates first, player #2 has solo 3, [F281A10B1DA10AED]"},
+    {"0003020001000E0003A0EB48A10B58A113D1010C0000080101", "Game negotiation, player #1 negotiates first, player #0 has solo 3, [EB48A10B58A113D1]"},
+    {"0003020002000E0003A0E6AEA113BAA10085020C0001080101", "Game negotiation, player #2 negotiates first, player #1 has solo 3, [E6AEA113BAA10085]"},
+    {"0003020000000E0003A0F166A10218A10B77000C0002080101", "Game negotiation, player #0 negotiates first, player #2 has solo 3, [F166A10218A10B77]"},
+    {"0003020001000E0003A0DF49A0FFC6A10B29010C0000080101", "Game negotiation, player #1 negotiates first, player #0 has solo 3, [DF49A0FFC6A10B29]"},
+    {"0003020002000E0003A0E914A10B47A11524020C0001080101", "Game negotiation, player #2 negotiates first, player #1 has solo 3, [E914A10B47A11524]"},
+    {"0003020002000E0003A0EEA2A11059A11A3D020C0001080101", "Game negotiation, player #2 negotiates first, player #1 has solo 3, [EEA2A11059A11A3D]"},
+    {"0003020000000E0003A0F8A9A10A0EA11FC4000C0002080101", "Game negotiation, player #0 negotiates first, player #2 has solo 3, [F8A9A10A0EA11FC4]"}
   ]
 
   test "parse_message with initial hand of cards" do
@@ -391,6 +434,15 @@ defmodule Tarok.SocketTest do
   test "parse_message klop game started" do
     Enum.each(
       @klop_game_started,
+      fn {message, expected} ->
+        assert parse_message(Base.decode16!(message)) == expected
+      end
+    )
+  end
+
+  test "parse_message game negotation begins" do
+    Enum.each(
+      @game_negotiation_begins,
       fn {message, expected} ->
         assert parse_message(Base.decode16!(message)) == expected
       end
