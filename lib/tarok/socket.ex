@@ -128,8 +128,9 @@ defmodule Tarok.Socket do
     {:ok, state}
   end
 
-  def handle_info(_, state) do
-    {:ok, state}
+  def handle_info(data, state) do
+    #{:ok, state}
+    {:push, {:text, Jason.encode!(data)}, state}
   end
 
   def terminate(_reason, _state) do

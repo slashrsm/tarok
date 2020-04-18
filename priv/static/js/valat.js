@@ -10,8 +10,33 @@
     return prefixed;
   }
 
+  var body = document.getElementsByTagName('body')
+  var helper = document.createElement("div");
+
+  helper.style.width = "100%";
+  helper.style.background = "rgba(255,255,255,0.4)";
+  helper.style.color = "#444";
+  helper.style.fontSize = "14px";
+  helper.style.position = "absolute";
+  helper.style.bottom = "0px";
+  helper.style.zIndex = 1000;
+
+  body[0].appendChild(helper)
+
   var ex_socket = new WebSocket("ws://localhost:4000/moves/socket");
   ex_socket.binaryType = "arraybuffer";
+
+  ex_socket.onmessage = function(event) {
+    var data = JSON.parse(event.data)
+    helper.innerHTML = "";  
+    for (var key in data) {
+        var element = document.createElement("div");
+        element.style.display = "inline-block";
+        element.style.padding = "0.25em";
+        element.innerHTML = "<strong>" + key + ":</strong> " + data[key];      
+        helper.appendChild(element);
+    }
+  };
 
   var d, aa = "object" === typeof __ScalaJSEnv && __ScalaJSEnv ? __ScalaJSEnv : {},
       ca = "object" === typeof aa.global && aa.global ? aa.global : "object" === typeof global && global && global.Object === Object ? global : this;
