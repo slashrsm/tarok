@@ -158,6 +158,15 @@ defmodule Tarok.Socket do
     end
   end
 
+  def parse_message(
+        <<0x00, 0x04, 0x19, 0x00, time?::binary-size(2), player::size(8), 0x12, 0x02, 0x00,
+          next_player::size(8), 0x03, 0x03, 0x06, 0x06, 0x0C, 0x00, player_again::size(8), 0x03,
+          0x01, 0x01>>
+      )
+      when player == player_again and rem(player + 1, 3) == next_player do
+        "Klop started by player ##{player}. [time?: #{Base.encode16(time?)}, next player: #{next_player}]"
+  end
+
   def parse_message(<<0x00, 0x01, 0x01, 0x00, games_nr::size(8), games::binary>>) do
     {games, rest} = parse_games_can_play(games, games_nr, [])
 

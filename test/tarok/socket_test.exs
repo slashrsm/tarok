@@ -76,42 +76,78 @@ defmodule Tarok.SocketTest do
   ]
 
   @someone_played_talon_added [
-    {"00031900833A021300001904001300000E0201", "Player #2 plays ♥Q, talon contributes ♦3, end of round, [time?: 833A, collecting player?: 2, 00]"},
-    {"0003190082C8011300000704001300001F0101", "Player #1 plays ♦K, talon contributes ♣K, end of round, [time?: 82C8, collecting player?: 1, 00]"},
-    {"000319008224021300000D0400130000150001", "Player #0 plays ♠C, talon contributes ♥C, end of round, [time?: 8224, collecting player?: 2, 00]"},
-    {"0003190082DA02130000350400130000330101", "Player #1 plays XX, talon contributes Fool, end of round, [time?: 82DA, collecting player?: 2, 00]"},
-    {"0003190082FD001300002B04001300001C0101", "Player #1 plays ♦J, talon contributes XII, end of round, [time?: 82FD, collecting player?: 0, 00]"},
-    {"0003190083A000130000040400130000090201", "Player #2 plays ♥3, talon contributes ♣J, end of round, [time?: 83A0, collecting player?: 0, 00]"},
-    {"00031900825C01130000250400130000010201", "Player #2 plays ♣8, talon contributes VI, end of round, [time?: 825C, collecting player?: 1, 00]"},
-    {"00031900820E00130000020400130000200001", "Player #0 plays I, talon contributes ♣9, end of round, [time?: 820E, collecting player?: 0, 00]"},
-    {"000319008294021300002D0400130000320201", "Player #2 plays XIX, talon contributes XIV, end of round, [time?: 8294, collecting player?: 2, 00]"},
-    {"00031900824B01130000300400130000160101", "Player #1 plays ♠Q, talon contributes XVII, end of round, [time?: 824B, collecting player?: 1, 00]"},
-    {"000319008235001300002704001300001E0001", "Player #0 plays ♦Q, talon contributes VIII, end of round, [time?: 8235, collecting player?: 0, 00]"},
-    {"000319008309021300000A04001300002F0201", "Player #2 plays XVI, talon contributes ♥2, end of round, [time?: 8309, collecting player?: 2, 00]"},
-    {"000319008278011300002B04001300002F0001", "Player #0 plays XVI, talon contributes XII, end of round, [time?: 8278, collecting player?: 1, 00]"},
-    {"00031900828A00130000340400130000290001", "Player #0 plays X, talon contributes XXI, end of round, [time?: 828A, collecting player?: 0, 00]"},
-    {"0003190082D102130000090400130000130201", "Player #2 plays ♠10, talon contributes ♥3, end of round, [time?: 82D1, collecting player?: 2, 00]"},
-    {"00031900828A001300002C0400130000140101", "Player #1 plays ♠J, talon contributes XIII, end of round, [time?: 828A, collecting player?: 0, 00]"},
-    {"000319008325021300002A0400130000310201", "Player #2 plays XVIII, talon contributes XI, end of round, [time?: 8325, collecting player?: 2, 00]"},
-    {"0003190082C7001300001C04001300000D0101", "Player #1 plays ♥C, talon contributes ♦J, end of round, [time?: 82C7, collecting player?: 0, 00]"},
-    {"0003190082C501130000240400130000330101", "Player #1 plays XX, talon contributes V, end of round, [time?: 82C5, collecting player?: 1, 00]"},
-    {"000319008228001300003204001300000F0001", "Player #0 plays ♥K, talon contributes XIX, end of round, [time?: 8228, collecting player?: 0, 00]"},
-    {"0003190082F301130000220400130000130201", "Player #2 plays ♠10, talon contributes III, end of round, [time?: 82F3, collecting player?: 1, 00]"},
-    {"00031900824F021300003404001300001C0001", "Player #0 plays ♦J, talon contributes XXI, end of round, [time?: 824F, collecting player?: 2, 00]"},
-    {"00031900831D011300002604001300001F0101", "Player #1 plays ♦K, talon contributes VII, end of round, [time?: 831D, collecting player?: 1, 00]"},
-    {"00031900829900130000350400130000060001", "Player #0 plays ♣Q, talon contributes Fool, end of round, [time?: 8299, collecting player?: 0, 00]"},
-    {"0003190082A601130000290400130000090201", "Player #2 plays ♥3, talon contributes X, end of round, [time?: 82A6, collecting player?: 1, 00]"},
-    {"00031900822A02130000320400130000150001", "Player #0 plays ♠C, talon contributes XIX, end of round, [time?: 822A, collecting player?: 2, 00]"},
-    {"0003190082FD02130000030400130000330101", "Player #1 plays XX, talon contributes ♣10, end of round, [time?: 82FD, collecting player?: 2, 00]"},
-    {"00031900832101130000350400130000060101", "Player #1 plays ♣Q, talon contributes Fool, end of round, [time?: 8321, collecting player?: 1, 00]"},
-    {"000319008293021300001F0400130000010001", "Player #0 plays ♣8, talon contributes ♦K, end of round, [time?: 8293, collecting player?: 2, 00]"},
-    {"000319008370001300002C0400130000180101", "Player #1 plays ♦4, talon contributes XIII, end of round, [time?: 8370, collecting player?: 0, 00]"},
-    {"00031900826E001300002A0400130000310101", "Player #1 plays XVIII, talon contributes XI, end of round, [time?: 826E, collecting player?: 0, 00]"},
-    {"0003190082BD00130000220400130000100201", "Player #2 plays ♠7, talon contributes III, end of round, [time?: 82BD, collecting player?: 0, 00]"},
-    {"0003190082E102130000200400130000330201", "Player #2 plays XX, talon contributes I, end of round, [time?: 82E1, collecting player?: 2, 00]"},
-    {"0003190082D8011300002C0400130000030101", "Player #1 plays ♣10, talon contributes XIII, end of round, [time?: 82D8, collecting player?: 1, 00]"},
-    {"00031900823B00130000270400130000320001", "Player #0 plays XIX, talon contributes VIII, end of round, [time?: 823B, collecting player?: 0, 00]"},
-    {"000319008350021300000E04001300002E0201", "Player #2 plays XV, talon contributes ♥Q, end of round, [time?: 8350, collecting player?: 2, 00]"}
+    {"00031900833A021300001904001300000E0201",
+     "Player #2 plays ♥Q, talon contributes ♦3, end of round, [time?: 833A, collecting player?: 2, 00]"},
+    {"0003190082C8011300000704001300001F0101",
+     "Player #1 plays ♦K, talon contributes ♣K, end of round, [time?: 82C8, collecting player?: 1, 00]"},
+    {"000319008224021300000D0400130000150001",
+     "Player #0 plays ♠C, talon contributes ♥C, end of round, [time?: 8224, collecting player?: 2, 00]"},
+    {"0003190082DA02130000350400130000330101",
+     "Player #1 plays XX, talon contributes Fool, end of round, [time?: 82DA, collecting player?: 2, 00]"},
+    {"0003190082FD001300002B04001300001C0101",
+     "Player #1 plays ♦J, talon contributes XII, end of round, [time?: 82FD, collecting player?: 0, 00]"},
+    {"0003190083A000130000040400130000090201",
+     "Player #2 plays ♥3, talon contributes ♣J, end of round, [time?: 83A0, collecting player?: 0, 00]"},
+    {"00031900825C01130000250400130000010201",
+     "Player #2 plays ♣8, talon contributes VI, end of round, [time?: 825C, collecting player?: 1, 00]"},
+    {"00031900820E00130000020400130000200001",
+     "Player #0 plays I, talon contributes ♣9, end of round, [time?: 820E, collecting player?: 0, 00]"},
+    {"000319008294021300002D0400130000320201",
+     "Player #2 plays XIX, talon contributes XIV, end of round, [time?: 8294, collecting player?: 2, 00]"},
+    {"00031900824B01130000300400130000160101",
+     "Player #1 plays ♠Q, talon contributes XVII, end of round, [time?: 824B, collecting player?: 1, 00]"},
+    {"000319008235001300002704001300001E0001",
+     "Player #0 plays ♦Q, talon contributes VIII, end of round, [time?: 8235, collecting player?: 0, 00]"},
+    {"000319008309021300000A04001300002F0201",
+     "Player #2 plays XVI, talon contributes ♥2, end of round, [time?: 8309, collecting player?: 2, 00]"},
+    {"000319008278011300002B04001300002F0001",
+     "Player #0 plays XVI, talon contributes XII, end of round, [time?: 8278, collecting player?: 1, 00]"},
+    {"00031900828A00130000340400130000290001",
+     "Player #0 plays X, talon contributes XXI, end of round, [time?: 828A, collecting player?: 0, 00]"},
+    {"0003190082D102130000090400130000130201",
+     "Player #2 plays ♠10, talon contributes ♥3, end of round, [time?: 82D1, collecting player?: 2, 00]"},
+    {"00031900828A001300002C0400130000140101",
+     "Player #1 plays ♠J, talon contributes XIII, end of round, [time?: 828A, collecting player?: 0, 00]"},
+    {"000319008325021300002A0400130000310201",
+     "Player #2 plays XVIII, talon contributes XI, end of round, [time?: 8325, collecting player?: 2, 00]"},
+    {"0003190082C7001300001C04001300000D0101",
+     "Player #1 plays ♥C, talon contributes ♦J, end of round, [time?: 82C7, collecting player?: 0, 00]"},
+    {"0003190082C501130000240400130000330101",
+     "Player #1 plays XX, talon contributes V, end of round, [time?: 82C5, collecting player?: 1, 00]"},
+    {"000319008228001300003204001300000F0001",
+     "Player #0 plays ♥K, talon contributes XIX, end of round, [time?: 8228, collecting player?: 0, 00]"},
+    {"0003190082F301130000220400130000130201",
+     "Player #2 plays ♠10, talon contributes III, end of round, [time?: 82F3, collecting player?: 1, 00]"},
+    {"00031900824F021300003404001300001C0001",
+     "Player #0 plays ♦J, talon contributes XXI, end of round, [time?: 824F, collecting player?: 2, 00]"},
+    {"00031900831D011300002604001300001F0101",
+     "Player #1 plays ♦K, talon contributes VII, end of round, [time?: 831D, collecting player?: 1, 00]"},
+    {"00031900829900130000350400130000060001",
+     "Player #0 plays ♣Q, talon contributes Fool, end of round, [time?: 8299, collecting player?: 0, 00]"},
+    {"0003190082A601130000290400130000090201",
+     "Player #2 plays ♥3, talon contributes X, end of round, [time?: 82A6, collecting player?: 1, 00]"},
+    {"00031900822A02130000320400130000150001",
+     "Player #0 plays ♠C, talon contributes XIX, end of round, [time?: 822A, collecting player?: 2, 00]"},
+    {"0003190082FD02130000030400130000330101",
+     "Player #1 plays XX, talon contributes ♣10, end of round, [time?: 82FD, collecting player?: 2, 00]"},
+    {"00031900832101130000350400130000060101",
+     "Player #1 plays ♣Q, talon contributes Fool, end of round, [time?: 8321, collecting player?: 1, 00]"},
+    {"000319008293021300001F0400130000010001",
+     "Player #0 plays ♣8, talon contributes ♦K, end of round, [time?: 8293, collecting player?: 2, 00]"},
+    {"000319008370001300002C0400130000180101",
+     "Player #1 plays ♦4, talon contributes XIII, end of round, [time?: 8370, collecting player?: 0, 00]"},
+    {"00031900826E001300002A0400130000310101",
+     "Player #1 plays XVIII, talon contributes XI, end of round, [time?: 826E, collecting player?: 0, 00]"},
+    {"0003190082BD00130000220400130000100201",
+     "Player #2 plays ♠7, talon contributes III, end of round, [time?: 82BD, collecting player?: 0, 00]"},
+    {"0003190082E102130000200400130000330201",
+     "Player #2 plays XX, talon contributes I, end of round, [time?: 82E1, collecting player?: 2, 00]"},
+    {"0003190082D8011300002C0400130000030101",
+     "Player #1 plays ♣10, talon contributes XIII, end of round, [time?: 82D8, collecting player?: 1, 00]"},
+    {"00031900823B00130000270400130000320001",
+     "Player #0 plays XIX, talon contributes VIII, end of round, [time?: 823B, collecting player?: 0, 00]"},
+    {"000319008350021300000E04001300002E0201",
+     "Player #2 plays XV, talon contributes ♥Q, end of round, [time?: 8350, collecting player?: 2, 00]"}
   ]
 
   @someone_selected_talon [
@@ -240,6 +276,15 @@ defmodule Tarok.SocketTest do
      "Chat message from player #2: zdej pa pride pepi na vrsto!!!"}
   ]
 
+  @klop_game_started [
+    {"0004190082090012020001030306060C0000030101", "Klop started by player #0. [time?: 8209, next player: 1]"},
+    {"0004190081CA0012020001030306060C0000030101", "Klop started by player #0. [time?: 81CA, next player: 1]"},
+    {"0004190082450112020002030306060C0001030101", "Klop started by player #1. [time?: 8245, next player: 2]"},
+    {"0004190082970212020000030306060C0002030101", "Klop started by player #2. [time?: 8297, next player: 0]"},
+    {"00041900822F0012020001030306060C0000030101", "Klop started by player #0. [time?: 822F, next player: 1]"},
+    {"0004190082790212020000030306060C0002030101", "Klop started by player #2. [time?: 8279, next player: 0]"}
+  ]
+
   test "parse_message with initial hand of cards" do
     Enum.each(
       @initial_hands,
@@ -337,6 +382,15 @@ defmodule Tarok.SocketTest do
   test "parse_message new message" do
     Enum.each(
       @messages,
+      fn {message, expected} ->
+        assert parse_message(Base.decode16!(message)) == expected
+      end
+    )
+  end
+
+  test "parse_message klop game started" do
+    Enum.each(
+      @klop_game_started,
       fn {message, expected} ->
         assert parse_message(Base.decode16!(message)) == expected
       end
