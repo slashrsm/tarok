@@ -192,6 +192,23 @@ defmodule Tarok.Socket do
   end
 
   def parse_message(
+        <<0x00, 0x03, 0x19, 0x00, time?::binary-size(2), next_player::size(8), 0x1C, 0x00, 0x00,
+          0x06, card1::size(16), card2::size(16), card3::size(16), card4::size(16),
+          card5::size(16), card6::size(16), chunk_size::size(8), 0x90, 0x01, 0x02, 0x00,
+          game_info::binary>>
+      ) do
+    talon =
+      [card1, card2, card3, card4, card5, card6]
+      |> Enum.chunk_every(chunk_size)
+      |> Enum.map(fn chunk -> chunk |> Enum.map(&(@cards[&1])) |> Enum.join(" ") end)
+      |> Enum.join("-")
+
+    "Talon revealed, player ##{next_player} is selecting, #{talon}, [time?: #{Base.encode16(time?)}, game info: #{
+      Base.encode16(game_info) |> split_every_4() |> String.trim()
+    }]"
+  end
+
+  def parse_message(
         <<0x00, 0x04, 0x19, 0x00, time?::binary-size(2), player::size(8), 0x12, 0x02, 0x00,
           next_player::size(8), 0x03, 0x03, 0x06, 0x06, 0x0C, 0x00, player_again::size(8), 0x03,
           0x01, 0x01>>
@@ -213,7 +230,9 @@ defmodule Tarok.Socket do
     }]"
   end
 
-  def parse_message(<<0x00, 0x01, 0x01, 0x00, count::size(8), games::binary-size(count), rest::binary>>) do
+  def parse_message(
+        <<0x00, 0x01, 0x01, 0x00, count::size(8), games::binary-size(count), rest::binary>>
+      ) do
     games =
       games
       |> :binary.bin_to_list()
@@ -406,5 +425,4 @@ defmodule Tarok.Socket do
   def split_binary_at(_, <<>>, _) do
     :error
   end
-
 end

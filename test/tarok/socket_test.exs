@@ -401,6 +401,44 @@ defmodule Tarok.SocketTest do
      "Game negotiation, next to negotiate is player 1, first to negotiate was player #0, current bets: Pass-Solo 2-Solo 2-Pass, current game is Solo 2 by player #2, [time?: 82EB]"}
   ]
 
+  @talon_open [
+    {"000319008140011C0000060007000200290017000B000103900102000203080606", "Talon revealed, player #1 is selecting, ♣K ♣9 X-♠K ♥1 ♣8, [time?: 8140, game info: 0203 0806 06]"},
+    {"000319008197021C0000060030002900180001001D00220290010200000406090609", "Talon revealed, player #2 is selecting, XVII X-♦4 ♣8-♦C III, [time?: 8197, game info: 0004 0609 0609]"},
+    {"000319008210001C00000600260010001D0005000F001E03900102000103080606", "Talon revealed, player #0 is selecting, VII ♠7 ♦C-♣C ♥K ♦Q, [time?: 8210, game info: 0103 0806 06]"},
+    {"0003190082C7021C00000600090022000100160021000602900102000203060609", "Talon revealed, player #2 is selecting, ♥3 III-♣8 ♠Q-II ♣Q, [time?: 82C7, game info: 0203 0606 09]"},
+    {"0003190082C4021C0000060007002B003300220012001903900102000003080606", "Talon revealed, player #2 is selecting, ♣K XII XX-III ♠9 ♦3, [time?: 82C4, game info: 0003 0806 06]"},
+    {"00031900823F001C000006000C002C000300100032000B02900102000203060906", "Talon revealed, player #0 is selecting, ♥J XIII-♣10 ♠7-XIX ♥1, [time?: 823F, game info: 0203 0609 06]"},
+    {"000319008123021C000006002400200006000C002A002603900102000003080606", "Talon revealed, player #2 is selecting, V I ♣Q-♥J XI VII, [time?: 8123, game info: 0003 0806 06]"},
+    {"000319008264001C0000060015001F0014001E0021000A02900102000003060609", "Talon revealed, player #0 is selecting, ♠C ♦K-♠J ♦Q-II ♥2, [time?: 8264, game info: 0003 0606 09]"},
+    {"00031900822F001C000006002E0007001C002D0005001703900102000103080606", "Talon revealed, player #0 is selecting, XV ♣K ♦J-XIV ♣C ♠K, [time?: 822F, game info: 0103 0806 06]"},
+    {"00031900827E021C000006000E001B000C00040018000602900102000203060609", "Talon revealed, player #2 is selecting, ♥Q ♦1-♥J ♣J-♦4 ♣Q, [time?: 827E, game info: 0203 0606 09]"},
+    {"00031900827C011C000006000900350000000B0008003102900102000003060906", "Talon revealed, player #1 is selecting, ♥3 Fool-♣7 ♥1-♥4 XVIII, [time?: 827C, game info: 0003 0609 06]"},
+    {"00031900828F011C0000060008000F0007001E0002002A02900102000103060609", "Talon revealed, player #1 is selecting, ♥4 ♥K-♣K ♦Q-♣9 XI, [time?: 828F, game info: 0103 0606 09]"},
+    {"000319008252001C000006000B001F0027001A0007002502900102000203060906", "Talon revealed, player #0 is selecting, ♥1 ♦K-VIII ♦2-♣K VI, [time?: 8252, game info: 0203 0609 06]"},
+    {"0003190082BD011C0000060027002E0003000D0014001C02900102000003060906", "Talon revealed, player #1 is selecting, VIII XV-♣10 ♥C-♠J ♦J, [time?: 82BD, game info: 0003 0609 06]"},
+    {"00031900825D001C000006001F000700040014000D002603900102000103080606", "Talon revealed, player #0 is selecting, ♦K ♣K ♣J-♠J ♥C VII, [time?: 825D, game info: 0103 0806 06]"},
+    {"000319008290021C0000060006001C000B00040027001202900102000203060609", "Talon revealed, player #2 is selecting, ♣Q ♦J-♥1 ♣J-VIII ♠9, [time?: 8290, game info: 0203 0606 09]"},
+    {"0003190082AB001C00000600310027002000220029002B02900102000003060609", "Talon revealed, player #0 is selecting, XVIII VIII-I III-X XII, [time?: 82AB, game info: 0003 0606 09]"},
+    {"000319008261021C00000600120014001E00230035001702900102000103060906", "Talon revealed, player #2 is selecting, ♠9 ♠J-♦Q IIII-Fool ♠K, [time?: 8261, game info: 0103 0609 06]"},
+    {"000319008243021C000006000200250017002D000C002C02900102000203060609", "Talon revealed, player #2 is selecting, ♣9 VI-♠K XIV-♥J XIII, [time?: 8243, game info: 0203 0606 09]"},
+    {"0003190082B0011C00000600000031001900300004001E02900102000003060906", "Talon revealed, player #1 is selecting, ♣7 XVIII-♦3 XVII-♣J ♦Q, [time?: 82B0, game info: 0003 0609 06]"},
+    {"0003190082C3021C00000600340032000C00010031001B02900102000103060906", "Talon revealed, player #2 is selecting, XXI XIX-♥J ♣8-XVIII ♦1, [time?: 82C3, game info: 0103 0609 06]"},
+    {"00031900824D021C00000600080023000D000A0031001702900102000203060609", "Talon revealed, player #2 is selecting, ♥4 IIII-♥C ♥2-XVIII ♠K, [time?: 824D, game info: 0203 0606 09]"},
+    {"0003190082E3011C00000600170031003000130027001802900102000003060906", "Talon revealed, player #1 is selecting, ♠K XVIII-XVII ♠10-VIII ♦4, [time?: 82E3, game info: 0003 0609 06]"},
+    {"000319008262001C00000600350007002B0031000D000503900102000103080606", "Talon revealed, player #0 is selecting, Fool ♣K XII-XVIII ♥C ♣C, [time?: 8262, game info: 0103 0806 06]"},
+    {"000319008293021C00000600040030001B00230005001602900102000203060609", "Talon revealed, player #2 is selecting, ♣J XVII-♦1 IIII-♣C ♠Q, [time?: 8293, game info: 0203 0606 09]"},
+    {"000319008294001C00000600110000000800160019001A02900102000003060609", "Talon revealed, player #0 is selecting, ♠8 ♣7-♥4 ♠Q-♦3 ♦2, [time?: 8294, game info: 0003 0606 09]"},
+    {"000319008235011C00000600220008001B001F0004002E02900102000103060609", "Talon revealed, player #1 is selecting, III ♥4-♦1 ♦K-♣J XV, [time?: 8235, game info: 0103 0606 09]"},
+    {"000319008294021C0000060032001F002600290008001E02900102000203060609", "Talon revealed, player #2 is selecting, XIX ♦K-VII X-♥4 ♦Q, [time?: 8294, game info: 0203 0606 09]"},
+    {"00031900827B021C00000600230012001E002B0009000302900102000203060609", "Talon revealed, player #2 is selecting, IIII ♠9-♦Q XII-♥3 ♣10, [time?: 827B, game info: 0203 0606 09]"},
+    {"00031900825F011C000006001E0034000E000B0005000602900102000103060609", "Talon revealed, player #1 is selecting, ♦Q XXI-♥Q ♥1-♣C ♣Q, [time?: 825F, game info: 0103 0606 09]"},
+    {"00031900823C021C000006002F001D000F00100011001302900102000203060609", "Talon revealed, player #2 is selecting, XVI ♦C-♥K ♠7-♠8 ♠10, [time?: 823C, game info: 0203 0606 09]"},
+    {"00031900825D021C00000600120023001E000B0015001303900102000003080606", "Talon revealed, player #2 is selecting, ♠9 IIII ♦Q-♥1 ♠C ♠10, [time?: 825D, game info: 0003 0806 06]"},
+    {"0003190082C1001C000006001B001C00220032001200010290010200010406090609", "Talon revealed, player #0 is selecting, ♦1 ♦J-III XIX-♠9 ♣8, [time?: 82C1, game info: 0104 0609 0609]"},
+    {"0003190082C4021C0000060003000C00070021002D000402900102000203060609", "Talon revealed, player #2 is selecting, ♣10 ♥J-♣K II-XIV ♣J, [time?: 82C4, game info: 0203 0606 09]"},
+    {"000319008262021C000006002700320000002F00340010029001020000050606090906", "Talon revealed, player #2 is selecting, VIII XIX-♣7 XVI-XXI ♠7, [time?: 8262, game info: 0005 0606 0909 06]"}
+  ]
+
   test "parse_message with initial hand of cards" do
     Enum.each(
       @initial_hands,
@@ -525,6 +563,15 @@ defmodule Tarok.SocketTest do
   test "parse_message game negotation round" do
     Enum.each(
       @game_negotiation_round,
+      fn {message, expected} ->
+        assert parse_message(Base.decode16!(message)) == expected
+      end
+    )
+  end
+
+  test "parse_message talon open" do
+    Enum.each(
+      @talon_open,
       fn {message, expected} ->
         assert parse_message(Base.decode16!(message)) == expected
       end
