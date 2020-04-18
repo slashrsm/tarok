@@ -252,6 +252,22 @@ defmodule Tarok.Socket do
   end
 
   def parse_message(
+        <<0x00, 0x03, 0x19, 0x00, time?::binary-size(2), collecting_player::size(8), 0x13, 0x00,
+          0x00, talon_card::size(8), 0x04, unknown::binary-size(1), 0x13, 0x00, 0x00,
+          card::size(8), player::size(8), round_end::size(8)>>
+      ) do
+    if round_end == 0 do
+      "Player ##{player} plays #{@cards[card]}, talon contributes #{@cards[talon_card]}, [time?: #{
+        Base.encode16(time?)
+      }, collecting player?: #{collecting_player}, #{Base.encode16(unknown)}]"
+    else
+      "Player ##{player} plays #{@cards[card]}, talon contributes #{@cards[talon_card]}, end of round, [time?: #{
+        Base.encode16(time?)
+      }, collecting player?: #{collecting_player}, #{Base.encode16(unknown)}]"
+    end
+  end
+
+  def parse_message(
         <<0x00, 0x02, 0x19, 0x00, _time?::size(16), player?::size(8), 0x1C, 0x00, 0x00, 0x06,
           0x00, card1::size(8), 0x00, card2::size(8), 0x00, card3::size(8), 0x00, card4::size(8),
           0x00, card5::size(8), 0x00, card6::size(8), group_size::size(8), selected::size(8)>>
