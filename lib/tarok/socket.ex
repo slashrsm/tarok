@@ -65,7 +65,9 @@ defmodule Tarok.Socket do
     0x06 => "Pass",
     0x07 => "Solo 1",
     0x09 => "Solo 2",
-    0x0A => "Solo w/o"
+    0x08 => "Solo 3",
+    0x0A => "Solo w/o",
+    0x01 => "Beggar?"
   }
 
   @color_hand_bits %{
@@ -148,6 +150,18 @@ defmodule Tarok.Socket do
     else
       "I play game: #{game_nr}"
     end
+  end
+
+  def parse_message(<<0x00, 0x01, 0x01, 0x00, games_nr::size(8), games::binary>>) do
+    {games, rest} = parse_games_can_play(games, games_nr, [])
+
+    games =
+      games
+      |> Enum.map(fn <<game_id>> -> @games[game_id] end)
+      |> Enum.reverse()
+      |> Enum.join(", ")
+
+    "I am allowed to play games: #{games}. [rest: #{Base.encode16(rest)}]"
   end
 
   def parse_message(<<0x0, 0x01, 0x16, 0x00, limit::binary>>) do
@@ -316,5 +330,11 @@ defmodule Tarok.Socket do
 
   def split_binary_at(_, <<>>, _) do
     :error
+  end
+
+  def parse_games_can_play(rest, 0, games), do: {games, rest}
+
+  def parse_games_can_play(<<current_game::binary-size(1), rest::binary>>, games_nr, games) do
+    parse_games_can_play(rest, games_nr - 1, [current_game | games])
   end
 end

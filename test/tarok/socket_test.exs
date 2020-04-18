@@ -127,14 +127,32 @@ defmodule Tarok.SocketTest do
   ]
 
   @games [
+    {"020001", "I play game: Beggar?"},
     {"020003", "I play game: Klop"},
     {"020004", "I play game: 4"},
     {"020005", "I play game: 5"},
     {"020006", "I play game: Pass"},
     {"020007", "I play game: Solo 1"},
-    {"020008", "I play game: 8"},
+    {"020008", "I play game: Solo 3"},
     {"020009", "I play game: Solo 2"},
     {"02000A", "I play game: Solo w/o"}
+  ]
+
+  @my_game_options [
+    {"0001010005060907010A0106",
+     "I am allowed to play games: Pass, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 0106]"},
+    {"0001010005060907010A020609",
+     "I am allowed to play games: Pass, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 020609]"},
+    {"00010100040607010A0106",
+      "I am allowed to play games: Pass, Solo 1, Beggar?, Solo w/o. [rest: 0106]"},
+    {"000101000603080907010A020308",
+      "I am allowed to play games: Klop, Solo 3, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 020308]"},
+    {"000101000603080907010A0103",
+      "I am allowed to play games: Klop, Solo 3, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 0103]"},
+    {"000101000603080907010A020809",
+      "I am allowed to play games: Klop, Solo 3, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 020809]"},
+    {"000101000603080907010A0108",
+      "I am allowed to play games: Klop, Solo 3, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 0108]"}
   ]
 
   test "parse_message with initial hand of cards" do
@@ -207,6 +225,15 @@ defmodule Tarok.SocketTest do
   test "parse_message game ended" do
     Enum.each(
       @game_ended,
+      fn {message, expected} ->
+        assert parse_message(Base.decode16!(message)) == expected
+      end
+    )
+  end
+
+  test "parse_message my possible games" do
+    Enum.each(
+      @my_game_options,
       fn {message, expected} ->
         assert parse_message(Base.decode16!(message)) == expected
       end
