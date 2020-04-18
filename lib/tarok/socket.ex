@@ -136,6 +136,12 @@ defmodule Tarok.Socket do
     :ok
   end
 
+  def parse_message(
+        <<0x00, 0x01, 0x0B, 0x00, player::size(8), _bytes_num::size(8), message::binary>>
+      ) do
+    "Chat message from player ##{player}: #{message}"
+  end
+
   def parse_message(<<0x09, 0x00, 0x00, card::size(8)>>) do
     "I play card: " <> @cards[card]
   end

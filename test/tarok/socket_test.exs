@@ -144,15 +144,61 @@ defmodule Tarok.SocketTest do
     {"0001010005060907010A020609",
      "I am allowed to play games: Pass, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 020609]"},
     {"00010100040607010A0106",
-      "I am allowed to play games: Pass, Solo 1, Beggar?, Solo w/o. [rest: 0106]"},
+     "I am allowed to play games: Pass, Solo 1, Beggar?, Solo w/o. [rest: 0106]"},
     {"000101000603080907010A020308",
-      "I am allowed to play games: Klop, Solo 3, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 020308]"},
+     "I am allowed to play games: Klop, Solo 3, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 020308]"},
     {"000101000603080907010A0103",
-      "I am allowed to play games: Klop, Solo 3, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 0103]"},
+     "I am allowed to play games: Klop, Solo 3, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 0103]"},
     {"000101000603080907010A020809",
-      "I am allowed to play games: Klop, Solo 3, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 020809]"},
+     "I am allowed to play games: Klop, Solo 3, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 020809]"},
     {"000101000603080907010A0108",
-      "I am allowed to play games: Klop, Solo 3, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 0108]"}
+     "I am allowed to play games: Klop, Solo 3, Solo 2, Solo 1, Beggar?, Solo w/o. [rest: 0108]"}
+  ]
+
+  @messages [
+    {"00010B000208646F62726F206A65", "Chat message from player #2: dobro je"},
+    {"00010B000106526573206A65", "Chat message from player #1: Res je"},
+    {"00010B0001085768617474747474", "Chat message from player #1: Whattttt"},
+    {"00010B0001064D6F6A616161", "Chat message from player #1: Mojaaa"},
+    {"00010B00010944656A206E6568616A", "Chat message from player #1: Dej nehaj"},
+    {"00010B0002023A29", "Chat message from player #2: :)"},
+    {"00010B0002066A65626F6761", "Chat message from player #2: jeboga"},
+    {"00010B0000056861206861", "Chat message from player #0: ha ha"},
+    {"00010B000007776F6F686F6F6F", "Chat message from player #0: woohooo"},
+    {"00010B00020970697A64612076616D", "Chat message from player #2: pizda vam"},
+    {"00010B0001074E656565656565", "Chat message from player #1: Neeeeee"},
+    {"00010B000214756E20A1056B6973206D65206A65207A6A6562616C",
+     "Chat message from player #2: un \xA1\x05kis me je zjebal"},
+    {"00010B0002096A6F6A20766F6E676F", "Chat message from player #2: joj vongo"},
+    {"00010B000003756621", "Chat message from player #0: uf!"},
+    {"00010B0000077A61206D616C6F", "Chat message from player #0: za malo"},
+    {"00010B0002117673616A20656E6F206269207072696D75",
+     "Chat message from player #2: vsaj eno bi primu"},
+    {"00010B0001064B616A6A6A6A", "Chat message from player #1: Kajjjj"},
+    {"00010B00010D53656D206D656C203620737263", "Chat message from player #1: Sem mel 6 src"},
+    {"00010B00001473656D20696D656C20736C616265206B61727465",
+     "Chat message from player #0: sem imel slabe karte"},
+    {"00010B0000146D6120707265646F627265207A61206B6C6F7061",
+     "Chat message from player #0: ma predobre za klopa"},
+    {"00010B00022B656E65207461726F6B65207369206D6F6775207072696D697420646120626920726573752070616C636B6F",
+     "Chat message from player #2: ene taroke si mogu primit da bi resu palcko"},
+    {"00010B0002023A29", "Chat message from player #2: :)"},
+    {"00010B00000E696E206B616A206E616A2070696C", "Chat message from player #0: in kaj naj pil"},
+    {"00010B000003706F6C", "Chat message from player #0: pol"},
+    {"00010B000109546F206A6520726573", "Chat message from player #1: To je res"},
+    {"00010B00001A6B6F6C6B20736920696D656C207461726F6B6F762070697A6461",
+     "Chat message from player #0: kolk si imel tarokov pizda"},
+    {"00010B0001044974616B", "Chat message from player #1: Itak"},
+    {"00010B0002023A29", "Chat message from player #2: :)"},
+    {"00010B00011E53656D20706F6E657372658D04696C2070727469736E6974206E617072656A",
+     "Chat message from player #1: Sem ponesre\x8D\x04il prtisnit naprej"},
+    {"00010B00000475666661", "Chat message from player #0: uffa"},
+    {"00010B0000086A65627465207365", "Chat message from player #0: jebte se"},
+    {"00010B0002023A29", "Chat message from player #2: :)"},
+    {"00010B000211627261766F20766F6E676F203A29292929",
+     "Chat message from player #2: bravo vongo :))))"},
+    {"00010B00021E7A64656A2070612070726964652070657069206E6120767273746F212121",
+     "Chat message from player #2: zdej pa pride pepi na vrsto!!!"}
   ]
 
   test "parse_message with initial hand of cards" do
@@ -234,6 +280,15 @@ defmodule Tarok.SocketTest do
   test "parse_message my possible games" do
     Enum.each(
       @my_game_options,
+      fn {message, expected} ->
+        assert parse_message(Base.decode16!(message)) == expected
+      end
+    )
+  end
+
+  test "parse_message new message" do
+    Enum.each(
+      @messages,
       fn {message, expected} ->
         assert parse_message(Base.decode16!(message)) == expected
       end
