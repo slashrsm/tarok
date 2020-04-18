@@ -200,12 +200,12 @@ defmodule Tarok.Socket do
     talon =
       [card1, card2, card3, card4, card5, card6]
       |> Enum.chunk_every(chunk_size)
-      |> Enum.map(fn chunk -> chunk |> Enum.map(&(@cards[&1])) |> Enum.join(" ") end)
+      |> Enum.map(fn chunk -> chunk |> Enum.map(&@cards[&1]) |> Enum.join(" ") end)
       |> Enum.join("-")
 
-    "Talon revealed, player ##{next_player} is selecting, #{talon}, [time?: #{Base.encode16(time?)}, game info: #{
-      Base.encode16(game_info) |> split_every_4() |> String.trim()
-    }]"
+    "Talon revealed, player ##{next_player} is selecting, #{talon}, [time?: #{
+      Base.encode16(time?)
+    }, game info: #{Base.encode16(game_info) |> split_every_4() |> String.trim()}]"
   end
 
   def parse_message(
@@ -246,10 +246,18 @@ defmodule Tarok.Socket do
     "My possible moves are: #{Base.encode16(limit)}"
   end
 
-  def parse_message(<<0x00, 0x05, 0x02, 0x00, player::size(8), 0x00, 0x0E, 0x00, 0x03, 0xA0, gibberish::binary-size(8), player_again::size(8), 0x0C, 0x00, obligatory_player::size(8), 0x08, 0x01, 0x01, 0x17, 0x00, 0x00, 0xE1, hand::binary-size(8), second_unknown::binary>>) when player == player_again and rem(obligatory_player + 1, 3) == player do
+  def parse_message(
+        <<0x00, 0x05, 0x02, 0x00, player::size(8), 0x00, 0x0E, 0x00, 0x03, 0xA0,
+          gibberish::binary-size(8), player_again::size(8), 0x0C, 0x00,
+          obligatory_player::size(8), 0x08, 0x01, 0x01, 0x17, 0x00, 0x00, 0xE1,
+          hand::binary-size(8), second_unknown::binary>>
+      )
+      when player == player_again and rem(obligatory_player + 1, 3) == player do
     hand = get_hand(hand) |> Enum.join(" ")
 
-    "Game started, Got hand: #{hand}, player ##{player} negotiates first, player ##{obligatory_player} has solo 3, [gibberish: #{Base.encode16(gibberish)}, #{Base.encode16(second_unknown)}]"
+    "Game started, Got hand: #{hand}, player ##{player} negotiates first, player ##{
+      obligatory_player
+    } has solo 3, [gibberish: #{Base.encode16(gibberish)}, #{Base.encode16(second_unknown)}]"
   end
 
   def parse_message(<<0x00, 0x04, 0x09, 0x00, full_message::binary>>) do
