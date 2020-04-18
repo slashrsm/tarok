@@ -159,6 +159,39 @@ defmodule Tarok.Socket do
   end
 
   def parse_message(
+        <<0x00, 0x02, 0x19, 0x00, time?::binary-size(2), next_player::size(8), 0x02, 0x00,
+          first_negotiator::size(8), count::size(8), bets::binary-size(count)>>
+      ) do
+    bets =
+      bets
+      |> :binary.bin_to_list()
+      |> Enum.map(fn game_id -> @games[game_id] end)
+      |> Enum.join("-")
+
+    "Game negotiation, next to negotiate is player #{next_player}, first to negotiate was player ##{
+      first_negotiator
+    }, current bets: #{bets}, [time?: #{Base.encode16(time?)}]"
+  end
+
+  def parse_message(
+        <<0x00, 0x03, 0x19, 0x00, time?::binary-size(2), next_player::size(8), 0x02, 0x00,
+          first_negotiator::size(8), count::size(8), bets::binary-size(count), 0x0C, 0x00,
+          player_with_game::size(8), current_game::size(8), 0x01, 0x01>>
+      ) do
+    bets =
+      bets
+      |> :binary.bin_to_list()
+      |> Enum.map(fn game_id -> @games[game_id] end)
+      |> Enum.join("-")
+
+    "Game negotiation, next to negotiate is player #{next_player}, first to negotiate was player ##{
+      first_negotiator
+    }, current bets: #{bets}, current game is #{@games[current_game]} by player ##{
+      player_with_game
+    }, [time?: #{Base.encode16(time?)}]"
+  end
+
+  def parse_message(
         <<0x00, 0x04, 0x19, 0x00, time?::binary-size(2), player::size(8), 0x12, 0x02, 0x00,
           next_player::size(8), 0x03, 0x03, 0x06, 0x06, 0x0C, 0x00, player_again::size(8), 0x03,
           0x01, 0x01>>
@@ -180,13 +213,11 @@ defmodule Tarok.Socket do
     }]"
   end
 
-  def parse_message(<<0x00, 0x01, 0x01, 0x00, games_nr::size(8), games::binary>>) do
-    {games, rest} = parse_games_can_play(games, games_nr, [])
-
+  def parse_message(<<0x00, 0x01, 0x01, 0x00, count::size(8), games::binary-size(count), rest::binary>>) do
     games =
       games
-      |> Enum.map(fn <<game_id>> -> @games[game_id] end)
-      |> Enum.reverse()
+      |> :binary.bin_to_list()
+      |> Enum.map(fn game_id -> @games[game_id] end)
       |> Enum.join(", ")
 
     "I am allowed to play games: #{games}. [rest: #{Base.encode16(rest)}]"
@@ -376,9 +407,4 @@ defmodule Tarok.Socket do
     :error
   end
 
-  def parse_games_can_play(rest, 0, games), do: {games, rest}
-
-  def parse_games_can_play(<<current_game::binary-size(1), rest::binary>>, games_nr, games) do
-    parse_games_can_play(rest, games_nr - 1, [current_game | games])
-  end
 end
