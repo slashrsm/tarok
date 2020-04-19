@@ -142,7 +142,7 @@ defmodule Tarok.CountTest do
         :xi,
         :xii,
         :xiii,
-        :xiv,
+        :xiv
       ],
       15
     }

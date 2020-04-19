@@ -1,6 +1,7 @@
 defmodule Tarok.SocketTest do
   use ExUnit.Case
   import Tarok.Socket
+  import Mock
 
   # TODO this is a duplicate. Optimize
   @cards %{
@@ -152,11 +153,11 @@ defmodule Tarok.SocketTest do
 
   @someone_selected_talon [
     {"000219008855011C0000060035002F001800130001000A0200",
-     "Player #1 (?) selected: Fool XVI, left: ♦4 ♠10 ♣8 ♥2"},
+     "Player #1 selected: Fool XVI, left: ♦4 ♠10 ♣8 ♥2"},
     {"000219008855011C0000060035002F001800130001000A0301",
-     "Player #1 (?) selected: ♠10 ♣8 ♥2, left: Fool XVI ♦4"},
+     "Player #1 selected: ♠10 ♣8 ♥2, left: Fool XVI ♦4"},
     {"000219008855011C0000060035002F001800130001000A0104",
-     "Player #1 (?) selected: ♣8, left: Fool XVI ♦4 ♠10 ♥2"}
+     "Player #1 selected: ♣8, left: Fool XVI ♦4 ♠10 ♥2"}
   ]
 
   @game_starts [
@@ -473,6 +474,25 @@ defmodule Tarok.SocketTest do
     {"000319008262021C000006002700320000002F00340010029001020000050606090906",
      "Talon revealed, player #2 is selecting, VIII XIX-♣7 XVI-XXI ♠7, [time?: 8262, game info: 0005 0606 0909 06]"}
   ]
+
+  setup_with_mocks [
+    {
+      Tarok.GameStats,
+      [],
+      [
+        new_game: fn _ -> :ok end,
+        klop: fn -> :ok end,
+        standard: fn -> :ok end,
+        my_game: fn -> :ok end,
+        their_game: fn -> :ok end,
+        i_took_talon: fn _ -> :ok end,
+        they_left_talon: fn _ -> :ok end,
+        i_play_card: fn _ -> :ok end
+      ]
+    }
+  ] do
+    :ok
+  end
 
   test "parse_message with initial hand of cards" do
     Enum.each(

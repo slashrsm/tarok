@@ -2,120 +2,8 @@ defmodule Tarok.Socket do
   @behaviour Phoenix.Socket.Transport
   require Logger
   use Bitwise
-
-  @card_human_names %{
-    :c7 => "♣7",
-    :c8 => "♣8",
-    :c9 => "♣9",
-    :c10 => "♣10",
-    :cJ => "♣J",
-    :cC => "♣C",
-    :cQ => "♣Q",
-    :cK => "♣K",
-    :h4 => "♥4",
-    :h3 => "♥3",
-    :h2 => "♥2",
-    :h1 => "♥1",
-    :hJ => "♥J",
-    :hC => "♥C",
-    :hQ => "♥Q",
-    :hK => "♥K",
-    :s7 => "♠7",
-    :s8 => "♠8",
-    :s9 => "♠9",
-    :s10 => "♠10",
-    :sJ => "♠J",
-    :sC => "♠C",
-    :sQ => "♠Q",
-    :sK => "♠K",
-    :d4 => "♦4",
-    :d3 => "♦3",
-    :d2 => "♦2",
-    :d1 => "♦1",
-    :dJ => "♦J",
-    :dC => "♦C",
-    :dQ => "♦Q",
-    :dK => "♦K",
-    :i => "I",
-    :ii => "II",
-    :iii => "III",
-    :iiii => "IIII",
-    :v => "V",
-    :vi => "VI",
-    :vii => "VII",
-    :viii => "VIII",
-    :ix => "IX",
-    :x => "X",
-    :xi => "XI",
-    :xii => "XII",
-    :xiii => "XIII",
-    :xiv => "XIV",
-    :xv => "XV",
-    :xvi => "XVI",
-    :xvii => "XVII",
-    :xviii => "XVIII",
-    :xix => "XIX",
-    :xx => "XX",
-    :xxi => "XXI",
-    :fool => "Fool"
-  }
-
-  @card_codes %{
-    0x00 => :c7,
-    0x01 => :c8,
-    0x02 => :c9,
-    0x03 => :c10,
-    0x04 => :cJ,
-    0x05 => :cC,
-    0x06 => :cQ,
-    0x07 => :cK,
-    0x08 => :h4,
-    0x09 => :h3,
-    0x0A => :h2,
-    0x0B => :h1,
-    0x0C => :hJ,
-    0x0D => :hC,
-    0x0E => :hQ,
-    0x0F => :hK,
-    0x10 => :s7,
-    0x11 => :s8,
-    0x12 => :s9,
-    0x13 => :s10,
-    0x14 => :sJ,
-    0x15 => :sC,
-    0x16 => :sQ,
-    0x17 => :sK,
-    0x18 => :d4,
-    0x19 => :d3,
-    0x1A => :d2,
-    0x1B => :d1,
-    0x1C => :dJ,
-    0x1D => :dC,
-    0x1E => :dQ,
-    0x1F => :dK,
-    0x20 => :i,
-    0x21 => :ii,
-    0x22 => :iii,
-    0x23 => :iiii,
-    0x24 => :v,
-    0x25 => :vi,
-    0x26 => :vii,
-    0x27 => :viii,
-    0x28 => :ix,
-    0x29 => :x,
-    0x2A => :xi,
-    0x2B => :xii,
-    0x2C => :xiii,
-    0x2D => :xiv,
-    0x2E => :xv,
-    0x2F => :xvi,
-    0x30 => :xvii,
-    0x31 => :xviii,
-    0x32 => :xix,
-    0x33 => :xx,
-    0x34 => :xxi,
-    0x35 => :fool
-  }
+  alias Tarok.Card
+  alias Tarok.GameStats
 
   @games %{
     0x03 => "Klop",
@@ -186,7 +74,6 @@ defmodule Tarok.Socket do
   end
 
   def handle_info(data, state) do
-    # {:ok, state}
     {:push, {:text, Jason.encode!(data)}, state}
   end
 
@@ -201,7 +88,9 @@ defmodule Tarok.Socket do
   end
 
   def parse_message(<<0x09, 0x00, 0x00, card::size(8)>>) do
-    "I play card: " <> @card_human_names[@card_codes[card]]
+    card = Card.get_card_from_code(card)
+    GameStats.i_play_card(card)
+    "I play card: " <> Card.get_human_name(card)
   end
 
   def parse_message(<<0x08, 0x00, set_nr::size(8)>>) do
@@ -259,9 +148,17 @@ defmodule Tarok.Socket do
       [card1, card2, card3, card4, card5, card6]
       |> Enum.chunk_every(chunk_size)
       |> Enum.map(fn chunk ->
-        chunk |> Enum.map(&@card_human_names[@card_codes[&1]]) |> Enum.join(" ")
+        chunk |> Enum.map(&Card.get_human_name_from_code(&1)) |> Enum.join(" ")
       end)
       |> Enum.join("-")
+
+    GameStats.standard()
+
+    if next_player == 0 do
+      GameStats.my_game()
+    else
+      GameStats.their_game(next_player)
+    end
 
     "Talon revealed, player ##{next_player} is selecting, #{talon}, [time?: #{
       Base.encode16(time?)
@@ -274,6 +171,8 @@ defmodule Tarok.Socket do
           0x01, 0x01>>
       )
       when player == player_again and rem(player + 1, 3) == next_player do
+    GameStats.klop()
+
     "Klop started by player ##{player}. [time?: #{Base.encode16(time?)}, next player: #{
       next_player
     }]"
@@ -313,21 +212,24 @@ defmodule Tarok.Socket do
           hand::binary-size(8), second_unknown::binary>>
       )
       when player == player_again and rem(obligatory_player + 1, 3) == player do
-    hand = get_hand(hand) |> Enum.join(" ")
+    hand = get_hand(hand)
+    GameStats.new_game(hand)
 
-    "Game started, Got hand: #{hand}, player ##{player} negotiates first, player ##{
-      obligatory_player
-    } has solo 3, [gibberish: #{Base.encode16(gibberish)}, #{Base.encode16(second_unknown)}]"
+    "Game started, Got hand: #{hand |> Enum.map(&Card.get_human_name(&1)) |> Enum.join(" ")}, player ##{
+      player
+    } negotiates first, player ##{obligatory_player} has solo 3, [gibberish: #{
+      Base.encode16(gibberish)
+    }, #{Base.encode16(second_unknown)}]"
   end
 
   def parse_message(<<0x00, 0x04, 0x09, 0x00, full_message::binary>>) do
     case split_binary_at(<<0x00, 0xE1>>, full_message, <<>>) do
       {first_unknown, <<hand::binary-size(8), second_unknown::binary>>} ->
-        won = get_hand(hand) |> Enum.join(" ")
+        won = get_hand(hand)
 
-        "Game ended. Player won the following cards: #{won}. [#{Base.encode16(first_unknown)}, #{
-          Base.encode16(second_unknown)
-        }]"
+        "Game ended. Player won the following cards: #{
+          won |> Enum.map(&Card.get_human_name(&1)) |> Enum.join(" ")
+        }. [#{Base.encode16(first_unknown)}, #{Base.encode16(second_unknown)}]"
 
       :error ->
         "Game ended. Unknown message: #{Base.encode16(full_message)}"
@@ -337,11 +239,11 @@ defmodule Tarok.Socket do
   def parse_message(<<0x00, 0x03, 0x09, 0x00, full_message::binary>>) do
     case split_binary_at(<<0x00, 0xE1>>, full_message, <<>>) do
       {first_unknown, <<hand::binary-size(8), second_unknown::binary>>} ->
-        won = get_hand(hand) |> Enum.join(" ")
+        won = get_hand(hand)
 
-        "Game ended. Player lost \"klop\": #{won}. [#{Base.encode16(first_unknown)}, #{
-          Base.encode16(second_unknown)
-        }]"
+        "Game ended. Player lost \"klop\": #{
+          won |> Enum.map(&Card.get_human_name(&1)) |> Enum.join(" ")
+        }. [#{Base.encode16(first_unknown)}, #{Base.encode16(second_unknown)}]"
 
       :error ->
         "Game ended. Unknown message: #{Base.encode16(full_message)}"
@@ -351,11 +253,11 @@ defmodule Tarok.Socket do
   def parse_message(<<0x00, 0x05, 0x07, 0x00, full_message::binary>>) do
     case split_binary_at(<<0x00, 0xE1>>, full_message, <<>>) do
       {first_unknown, <<hand::binary-size(8), second_unknown::binary>>} ->
-        won = get_hand(hand) |> Enum.join(" ")
+        won = get_hand(hand)
 
-        "Game ended. Want to play more? Player won the following cards: #{won}. [#{
-          Base.encode16(first_unknown)
-        }, #{Base.encode16(second_unknown)}]"
+        "Game ended. Want to play more? Player won the following cards: #{
+          won |> Enum.map(&Card.get_human_name(&1)) |> Enum.join(" ")
+        }. [#{Base.encode16(first_unknown)}, #{Base.encode16(second_unknown)}]"
 
       :error ->
         "Game ended. Want to play more? Unknown message: #{Base.encode16(full_message)}"
@@ -363,8 +265,10 @@ defmodule Tarok.Socket do
   end
 
   def parse_message(<<0x00, 0x01, 0x17, 0x00, 0x00, 0x00E1, hand::binary-size(8)>>) do
-    hand = get_hand(hand) |> Enum.join(" ")
-    "Got hand: #{hand}"
+    hand = get_hand(hand)
+    GameStats.new_game(hand)
+
+    "Got hand: #{hand |> Enum.map(&Card.get_human_name(&1)) |> Enum.join(" ")}"
   end
 
   def parse_message(<<0x05, 0x00, 0x02>>) do
@@ -376,13 +280,15 @@ defmodule Tarok.Socket do
           0x00, card::size(8), player::size(8), round_end::size(8)>>
       ) do
     # Time is not in miliseconds.
+    GameStats.card_on_the_table(Card.get_card_from_code(card), player)
+
     if round_end == 0 do
       "Player ##{player} plays " <>
-        @card_human_names[@card_codes[card]] <>
+        Card.get_human_name_from_code(card) <>
         ", [time?: #{Base.encode16(time?)}, #{Base.encode16(unknown)}]"
     else
       "Player ##{player} plays " <>
-        @card_human_names[@card_codes[card]] <>
+        Card.get_human_name_from_code(card) <>
         ", end of round, [time?: #{Base.encode16(time?)}, #{Base.encode16(unknown)}]"
     end
   end
@@ -392,15 +298,21 @@ defmodule Tarok.Socket do
           0x00, talon_card::size(8), 0x04, unknown::binary-size(1), 0x13, 0x00, 0x00,
           card::size(8), player::size(8), round_end::size(8)>>
       ) do
+    GameStats.card_on_the_table(
+      Card.get_card_from_code(card),
+      player,
+      Card.get_card_from_code(talon_card)
+    )
+
     if round_end == 0 do
-      "Player ##{player} plays #{@card_human_names[@card_codes[card]]}, talon contributes #{
-        @card_human_names[@card_codes[talon_card]]
+      "Player ##{player} plays #{Card.get_human_name_from_code(card)}, talon contributes #{
+        Card.get_human_name_from_code(talon_card)
       }, [time?: #{Base.encode16(time?)}, collecting player?: #{collecting_player}, #{
         Base.encode16(unknown)
       }]"
     else
-      "Player ##{player} plays #{@card_human_names[@card_codes[card]]}, talon contributes #{
-        @card_human_names[@card_codes[talon_card]]
+      "Player ##{player} plays #{Card.get_human_name_from_code(card)}, talon contributes #{
+        Card.get_human_name_from_code(talon_card)
       }, end of round, [time?: #{Base.encode16(time?)}, collecting player?: #{collecting_player}, #{
         Base.encode16(unknown)
       }]"
@@ -408,9 +320,9 @@ defmodule Tarok.Socket do
   end
 
   def parse_message(
-        <<0x00, 0x02, 0x19, 0x00, _time?::size(16), player?::size(8), 0x1C, 0x00, 0x00, 0x06,
-          0x00, card1::size(8), 0x00, card2::size(8), 0x00, card3::size(8), 0x00, card4::size(8),
-          0x00, card5::size(8), 0x00, card6::size(8), group_size::size(8), selected::size(8)>>
+        <<0x00, 0x02, 0x19, 0x00, _time?::size(16), player::size(8), 0x1C, 0x00, 0x00, 0x06, 0x00,
+          card1::size(8), 0x00, card2::size(8), 0x00, card3::size(8), 0x00, card4::size(8), 0x00,
+          card5::size(8), 0x00, card6::size(8), group_size::size(8), selected::size(8)>>
       ) do
     talon =
       [card1, card2, card3, card4, card5, card6]
@@ -419,17 +331,25 @@ defmodule Tarok.Socket do
     selected_chunk =
       talon
       |> Enum.at(selected)
-      |> Enum.map(fn card_id -> @card_human_names[@card_codes[card_id]] end)
-      |> Enum.join(" ")
+      |> Enum.map(&Card.get_card_from_code(&1))
 
     left_chunks =
       talon
       |> List.delete_at(selected)
       |> List.flatten()
-      |> Enum.map(fn card_id -> @card_human_names[@card_codes[card_id]] end)
-      |> Enum.join(" ")
+      |> Enum.map(&Card.get_card_from_code(&1))
 
-    "Player ##{player?} (?) selected: " <> selected_chunk <> ", left: " <> left_chunks
+    if player == 0 do
+      IO.inspect selected_chunk
+      GameStats.i_took_talon(selected_chunk)
+    else
+      IO.inspect left_chunks
+      GameStats.they_left_talon(left_chunks)
+    end
+
+    "Player ##{player} selected: #{
+      selected_chunk |> Enum.map(&Card.get_human_name(&1)) |> Enum.join(" ")
+    }, left: #{left_chunks |> Enum.map(&Card.get_human_name(&1)) |> Enum.join(" ")}"
   end
 
   def parse_message(msg) do
@@ -465,15 +385,15 @@ defmodule Tarok.Socket do
 
     tarocks1 =
       parse_hand_tarock(tarocks1)
-      |> Enum.map(fn card -> @card_human_names[@card_codes[card + 31]] end)
+      |> Enum.map(&Card.get_card_from_code(&1 + 31))
 
     tarocks2 =
       parse_hand_tarock(tarocks2)
-      |> Enum.map(fn card -> @card_human_names[@card_codes[card + 39]] end)
+      |> Enum.map(&Card.get_card_from_code(&1 + 39))
 
     tarocks3 =
       parse_hand_tarock(tarocks3)
-      |> Enum.map(fn card -> @card_human_names[@card_codes[card + 47]] end)
+      |> Enum.map(&Card.get_card_from_code(&1 + 47))
 
     clubs ++ hearts ++ spades ++ diamonds ++ tarocks1 ++ tarocks2 ++ tarocks3
   end

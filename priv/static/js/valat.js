@@ -16,7 +16,7 @@
   helper.style.width = "100%";
   helper.style.background = "rgba(255,255,255,0.4)";
   helper.style.color = "#444";
-  helper.style.fontSize = "14px";
+  helper.style.fontSize = "20px";
   helper.style.position = "absolute";
   helper.style.bottom = "0px";
   helper.style.zIndex = 1000;
