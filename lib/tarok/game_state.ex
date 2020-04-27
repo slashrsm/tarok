@@ -24,12 +24,14 @@ defmodule Tarok.GameState do
         }
 
   def create_from_hand(hand, game_type \\ nil, my_game \\ nil) do
+    hand = MapSet.new(hand)
+    all = MapSet.new(Card.get_all())
     %__MODULE__{
       game_type: game_type,
       my_game: my_game,
-      hand: MapSet.new(hand),
+      hand: hand,
       won: MapSet.new(),
-      available_cards: MapSet.new(Card.get_all() -- hand),
+      available_cards: MapSet.difference(all, hand),
       current_table: [],
       my_buddy: nil
     }
@@ -48,6 +50,9 @@ defmodule Tarok.GameState do
 
   def add_to_hand(%__MODULE__{} = game, chunk),
     do: %{game | hand: MapSet.union(MapSet.new(chunk), game.hand), available_cards: MapSet.difference(game.available_cards, MapSet.new(chunk))}
+
+  def remove_from_available(%__MODULE__{} = game, chunk),
+    do: %{game | available_cards: MapSet.difference(game.available_cards, MapSet.new(chunk))}
 
   def add_to_won(%__MODULE__{} = game, chunk),
     do: %{game | won: MapSet.union(MapSet.new(chunk), game.won), available_cards: MapSet.difference(game.available_cards, MapSet.new(chunk))}
@@ -139,10 +144,21 @@ defmodule Tarok.GameState do
     |> Enum.count()
   end
 
+  def available_color_count(%__MODULE__{available_cards: available}, color) do
+    available
+    |> Card.get_color_from_list(color)
+    |> Enum.count()
+  end
+
+  @spec get_stats(Tarok.GameState.t()) :: %{optional(<<_::16, _::_*8>>) => binary | number}
   def get_stats(%__MODULE__{} = game) do
     %{
       "T#" => available_tarock_count(game),
       "Curr. Score" => game.won |> MapSet.to_list() |> Count.get_score(),
+      "♣" => available_color_count(game, :club),
+      "♥" => available_color_count(game, :heart),
+      "♠" => available_color_count(game, :spade),
+      "♦" => available_color_count(game, :diamond),
       #"Av. Cards" =>
       #  Enum.map(game.available_cards, &Card.get_human_name(&1)) |> Enum.join(" ")
     }

@@ -8,7 +8,7 @@ defmodule Tarok.GameStats do
   def standard(), do: GenServer.call(GameStats, {:standard})
   def my_game(), do: GenServer.call(GameStats, {:my_game, true, nil})
   def their_game(next_player), do: GenServer.call(GameStats, {:my_game, false, next_player})
-  def i_took_talon(chunk), do: GenServer.call(GameStats, {:my_talon, chunk})
+  def i_took_talon(selected_chunk, left_chunk), do: GenServer.call(GameStats, {:my_talon, selected_chunk, left_chunk})
   def they_left_talon(chunk), do: GenServer.call(GameStats, {:their_talon, chunk})
   def i_play_card(card), do: GenServer.call(GameStats, {:i_play, card})
 
@@ -71,8 +71,11 @@ defmodule Tarok.GameStats do
     {:reply, game, %{state | game: game}, {:continue, {:update_stats, from}}}
   end
 
-  def handle_call({:my_talon, chunk}, from, state) do
-    game = GameState.add_to_hand(state.game, chunk)
+  def handle_call({:my_talon, selected_chunk, left_chunk}, from, state) do
+    game =
+      state.game
+      |> GameState.add_to_hand(selected_chunk)
+      |> GameState.remove_from_available(left_chunk)
     Logger.debug("My talon: " <> inspect(game))
     {:reply, game, %{state | game: game}, {:continue, {:update_stats, from}}}
   end

@@ -340,10 +340,8 @@ defmodule Tarok.Socket do
       |> Enum.map(&Card.get_card_from_code(&1))
 
     if player == 0 do
-      IO.inspect selected_chunk
-      GameStats.i_took_talon(selected_chunk)
+      GameStats.i_took_talon(selected_chunk, left_chunks)
     else
-      IO.inspect left_chunks
       GameStats.they_left_talon(left_chunks)
     end
 
@@ -375,13 +373,21 @@ defmodule Tarok.Socket do
            diamonds::integer-size(8), tarocks1::integer-size(8), tarocks2::integer-size(8),
            tarocks3::integer-size(8), 0x00>>
        ) do
-    clubs = parse_hand_color(clubs, :black) |> Enum.map(fn card -> "♣" <> card end)
+    clubs =
+      parse_hand_color(clubs, :black)
+      |> Enum.map(fn card -> String.to_existing_atom("c" <> card) end)
 
-    spades = parse_hand_color(spades, :black) |> Enum.map(fn card -> "♠" <> card end)
+    spades =
+      parse_hand_color(spades, :black)
+      |> Enum.map(fn card -> String.to_existing_atom("s" <> card) end)
 
-    hearts = parse_hand_color(hearts, :red) |> Enum.map(fn card -> "♥" <> card end)
+    hearts =
+      parse_hand_color(hearts, :red)
+      |> Enum.map(fn card -> String.to_existing_atom("h" <> card) end)
 
-    diamonds = parse_hand_color(diamonds, :red) |> Enum.map(fn card -> "♦" <> card end)
+    diamonds =
+      parse_hand_color(diamonds, :red)
+      |> Enum.map(fn card -> String.to_existing_atom("d" <> card) end)
 
     tarocks1 =
       parse_hand_tarock(tarocks1)
